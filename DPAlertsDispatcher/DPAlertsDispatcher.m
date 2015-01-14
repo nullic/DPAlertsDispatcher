@@ -69,10 +69,10 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #pragma mark - Dispatch
 
 - (void)dispatchError:(NSError *)error {
-    [self dispatchError:error groupSame:YES canCancel:NO cancelButtonTitle:nil dismissButtonTitle:nil completion:nil];
+    [self dispatchError:error groupSame:YES canCancel:NO cancelButtonTitle:nil dismissButtonTitle:nil userInfo:nil completion:nil];
 }
 
-- (void)dispatchError:(NSError *)error groupSame:(BOOL)groupSame canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle completion:(dp_dispatcher_completion_block_t)completion
+- (void)dispatchError:(NSError *)error groupSame:(BOOL)groupSame canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion
 {
     if (error == nil) return;
 
@@ -82,6 +82,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 
             DPAlertInfo *alertInfo = [DPAlertInfo new];
             alertInfo.error = error;
+            alertInfo.userInfo = userInfo;
 
             NSString *body = error.localizedDescription;
             if (body == nil) {
