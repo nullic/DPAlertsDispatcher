@@ -7,14 +7,12 @@
 //
 
 #import "NSError+DPCommons.h"
+#import "DPAlertsDispatcher.h"
 
 NSString * const kDPErrorTitleKey = @"DPErrorTitleKey";
+NSString * const kDPCurrentApplicationErrorDomain = @"CurrentApplicationErrorDomain";
 
 @implementation NSError (DPCommons)
-
-+ (NSString *)applicationErrorDomain {
-    return @"CurrentApplicationErrorDomain";
-}
 
 + (instancetype)applicationErrorWithDescription:(NSString *)description code:(NSInteger)code {
     return [self applicationErrorWithDescription:description title:nil code:code];
@@ -24,7 +22,22 @@ NSString * const kDPErrorTitleKey = @"DPErrorTitleKey";
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setValue:description forKey:NSLocalizedDescriptionKey];
     [userInfo setValue:title forKey:kDPErrorTitleKey];
-    return [self errorWithDomain:[self applicationErrorDomain] code:code userInfo:userInfo];
+    return [self errorWithDomain:kDPCurrentApplicationErrorDomain code:code userInfo:userInfo];
+}
+
+- (instancetype)log {
+    NSLog(@"Unresolved error: %@", self);
+    return self;
+}
+
+- (instancetype)show {
+    [[DPAlertsDispatcher defaultDispatcher] dispatchError:self];
+    return self;
+}
+
+- (void)fail {
+    NSLog(@"Unresolved error (critical error): %@", self);
+    abort();
 }
 
 @end

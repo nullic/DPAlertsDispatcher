@@ -98,8 +98,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
             alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ? cancelButtonTitle : self.defaultCancelTitle) : nil;
             alertInfo.completion = completion;
 
-            [self.messages addObject:alertInfo];
-            [self showNextMessage];
+            [self dispatchAlertInfo:alertInfo];
         };
 
         if (groupSame == YES) {
@@ -132,11 +131,15 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
         alertInfo.completion = completion;
         alertInfo.userInfo = userInfo;
 
-        dispatch_async(_dp_message_dispatcher_q, ^{
-            [self.messages addObject:alertInfo];
-            [self showNextMessage];
-        });
+        [self dispatchAlertInfo:alertInfo];
     }
+}
+
+- (void)dispatchAlertInfo:(DPAlertInfo *)alertInfo {
+    dispatch_async(_dp_message_dispatcher_q, ^{
+        [self.messages addObject:alertInfo];
+        [self showNextMessage];
+    });
 }
 
 #pragma mark - Show & Alert delegate
@@ -170,13 +173,6 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 
 #pragma mark -
 
-- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle completion:(dp_dispatcher_completion_block_t)completion
-{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:dismissButtonTitle, nil];
-    [alertView show];
-    self.alertShownCompletion = completion;
-}
-
 - (void)showAlertWithAlertInfo:(DPAlertInfo *)alertInfo completion:(dp_dispatcher_completion_block_t)completion {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:alertInfo.message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.dismissButtonTitle, nil];
     [alertView show];
@@ -192,3 +188,9 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 }
 
 @end
+
+// MARK: - Functions
+
+void dp_show_message(NSString *message, dp_dispatcher_completion_block_t completion) {
+    [[DPAlertsDispatcher defaultDispatcher] dispatchMessage:message withTitle:@"" canCancel:NO cancelButtonTitle:nil dismissButtonTitle:nil userInfo:nil completion:completion];
+}
