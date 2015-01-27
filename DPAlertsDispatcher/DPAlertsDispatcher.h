@@ -133,8 +133,6 @@ typedef void(^dp_dispatcher_completion_block_t)(BOOL canceled);
  @param completion          Block that will be invoked after alert was shown.
  
  @discussion Methos, in additional, set 'error' property in 'alertInfo' object; 'title' will be filled from userInfo of 'error' object (see kDPErrorTitleKey) or with 'defaultErrorTitle'.
- 
- @discussion Invoke [<font color="AA0D91">self</font> dispatchAlertInfo:alertInfo] in the end.
  */
 - (void)dispatchError:(NSError *)error groupSame:(BOOL)groupSame canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion;
 
@@ -157,8 +155,6 @@ typedef void(^dp_dispatcher_completion_block_t)(BOOL canceled);
  @param dismissButtonTitle  Title of 'dismiss' button. If value is <font color="AA0D91">nil</font> 'defaultDismissTitle' will be used to create 'alertInfo'.
  @param userInfo            'userInfo' object that will be associated with 'alertInfo' object.
  @param completion          Block that will be invoked after alert was shown.
- 
- @discussion Invoke [<font color="AA0D91">self</font> dispatchAlertInfo:alertInfo] in the end.
  */
 - (void)dispatchMessage:(NSString *)message withTitle:(NSString *)title canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion;
 

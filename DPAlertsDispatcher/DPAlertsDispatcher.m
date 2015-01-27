@@ -98,7 +98,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
             alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ? cancelButtonTitle : self.defaultCancelTitle) : nil;
             alertInfo.completion = completion;
 
-            [self dispatchAlertInfo:alertInfo];
+            [self _dispatchAlertInfo:alertInfo];
         };
 
         if (groupSame == YES) {
@@ -131,15 +131,19 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
         alertInfo.completion = completion;
         alertInfo.userInfo = userInfo;
 
-        [self dispatchAlertInfo:alertInfo];
+        [self _dispatchAlertInfo:alertInfo];
     }
 }
 
 - (void)dispatchAlertInfo:(DPAlertInfo *)alertInfo {
     dispatch_async(_dp_message_dispatcher_q, ^{
-        [self.messages addObject:alertInfo];
-        [self showNextMessage];
+        [self _dispatchAlertInfo:alertInfo];
     });
+}
+
+- (void)_dispatchAlertInfo:(DPAlertInfo *)alertInfo {
+    [self.messages addObject:alertInfo];
+    [self showNextMessage];
 }
 
 #pragma mark - Show & Alert delegate
