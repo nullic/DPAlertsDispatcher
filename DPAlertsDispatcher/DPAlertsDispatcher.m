@@ -92,7 +92,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
                 body = [body stringByAppendingFormat:@"\n%@", error.localizedRecoverySuggestion];
             }
 
-            alertInfo.message = userInfo[kDPErrorTitleKey] ? userInfo[kDPErrorTitleKey] : self.defaultErrorTitle;
+            alertInfo.title = userInfo[kDPErrorTitleKey] ? userInfo[kDPErrorTitleKey] : self.defaultErrorTitle;
             alertInfo.message = body;
             alertInfo.dismissButtonTitle = dismissButtonTitle ? dismissButtonTitle : self.defaultDismissTitle;
             alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ? cancelButtonTitle : self.defaultCancelTitle) : nil;
