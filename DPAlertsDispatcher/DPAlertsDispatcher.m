@@ -52,11 +52,11 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
     return _defaultErrorTitle;
 }
 
-- (NSString *)defaultDismissTitle {
-    if (!_defaultDismissTitle) {
-        _defaultDismissTitle = @"Dismiss";
+- (NSString *)defaultActionTitle {
+    if (!_defaultActionTitle) {
+        _defaultActionTitle = @"Dismiss";
     }
-    return _defaultDismissTitle;
+    return _defaultActionTitle;
 }
 
 - (NSString *)defaultCancelTitle {
@@ -69,10 +69,10 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #pragma mark - Dispatch
 
 - (void)dispatchError:(NSError *)error {
-    [self dispatchError:error groupSame:YES canCancel:NO cancelButtonTitle:nil dismissButtonTitle:nil userInfo:nil completion:nil];
+    [self dispatchError:error groupSame:YES canCancel:NO cancelButtonTitle:nil actionButtonTitle:nil userInfo:nil completion:nil];
 }
 
-- (void)dispatchError:(NSError *)error groupSame:(BOOL)groupSame canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion
+- (void)dispatchError:(NSError *)error groupSame:(BOOL)groupSame canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle actionButtonTitle:(NSString *)actionButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion
 {
     if (error == nil) return;
 
@@ -92,9 +92,9 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
                 body = [body stringByAppendingFormat:@"\n%@", error.localizedRecoverySuggestion];
             }
 
-            alertInfo.title = userInfo[kDPErrorTitleKey] ? userInfo[kDPErrorTitleKey] : self.defaultErrorTitle;
+            alertInfo.title = userInfo[kDPErrorTitleKey] ?: self.defaultErrorTitle;
             alertInfo.message = body;
-            alertInfo.dismissButtonTitle = dismissButtonTitle ? dismissButtonTitle : self.defaultDismissTitle;
+            alertInfo.actionButtonTitle = actionButtonTitle ?: self.defaultActionTitle;
             alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ? cancelButtonTitle : self.defaultCancelTitle) : nil;
             alertInfo.completion = completion;
 
@@ -115,19 +115,19 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
     });
 }
 
-- (void)dispatchMessage:(NSString *)message withTitle:(NSString *)title dismissButtonTitle:(NSString *)dismissButtonTitle {
-    [self dispatchMessage:message withTitle:title canCancel:NO cancelButtonTitle:nil dismissButtonTitle:dismissButtonTitle userInfo:nil completion:nil];
+- (void)dispatchMessage:(NSString *)message withTitle:(NSString *)title actionButtonTitle:(NSString *)actionButtonTitle {
+    [self dispatchMessage:message withTitle:title canCancel:NO cancelButtonTitle:nil actionButtonTitle:actionButtonTitle userInfo:nil completion:nil];
 }
 
-- (void)dispatchMessage:(NSString *)message withTitle:(NSString *)title canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle dismissButtonTitle:(NSString *)dismissButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion
+- (void)dispatchMessage:(NSString *)message withTitle:(NSString *)title canCancel:(BOOL)canCancel cancelButtonTitle:(NSString *)cancelButtonTitle actionButtonTitle:(NSString *)actionButtonTitle userInfo:(id)userInfo completion:(dp_dispatcher_completion_block_t)completion
 {
     if (message.length || title.length) {
         DPAlertInfo *alertInfo = [DPAlertInfo new];
 
         alertInfo.title = title;
         alertInfo.message = message;
-        alertInfo.dismissButtonTitle = dismissButtonTitle ? dismissButtonTitle : self.defaultDismissTitle;
-        alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ? cancelButtonTitle : self.defaultCancelTitle) : nil;
+        alertInfo.actionButtonTitle = actionButtonTitle ?: self.defaultActionTitle;
+        alertInfo.cancelButtonTitle = canCancel ? (cancelButtonTitle ?: self.defaultCancelTitle) : nil;
         alertInfo.completion = completion;
         alertInfo.userInfo = userInfo;
 
@@ -178,7 +178,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #pragma mark -
 
 - (void)showAlertWithAlertInfo:(DPAlertInfo *)alertInfo completion:(dp_dispatcher_completion_block_t)completion {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:alertInfo.message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.dismissButtonTitle, nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:alertInfo.message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.actionButtonTitle, nil];
     [alertView show];
     self.alertShownCompletion = completion;
 }
@@ -196,5 +196,9 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 // MARK: - Functions
 
 void dp_show_message(NSString *message, dp_dispatcher_completion_block_t completion) {
-    [[DPAlertsDispatcher defaultDispatcher] dispatchMessage:message withTitle:@"" canCancel:NO cancelButtonTitle:nil dismissButtonTitle:nil userInfo:nil completion:completion];
+    [[DPAlertsDispatcher defaultDispatcher] dispatchMessage:message withTitle:@"" canCancel:NO cancelButtonTitle:nil actionButtonTitle:nil userInfo:nil completion:completion];
+}
+
+void dp_show_error(NSError *error, dp_dispatcher_completion_block_t completion) {
+    [[DPAlertsDispatcher defaultDispatcher] dispatchError:error groupSame:NO canCancel:YES cancelButtonTitle:nil actionButtonTitle:nil userInfo:nil completion:completion];
 }
