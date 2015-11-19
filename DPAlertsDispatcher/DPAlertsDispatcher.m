@@ -178,9 +178,34 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #pragma mark -
 
 - (void)showAlertWithAlertInfo:(DPAlertInfo *)alertInfo completion:(dp_dispatcher_completion_block_t)completion {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_9_0
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:alertInfo.message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.actionButtonTitle, nil];
     [alertView show];
     self.alertShownCompletion = completion;
+#else
+    UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    if (rootViewController == nil) {
+        NSLog(@"DPAlertsDispatcher: Can't find rootViewController");
+    }
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertInfo.title message:alertInfo.message preferredStyle:UIAlertControllerStyleAlert];
+
+    if (alertInfo.cancelButtonTitle) {
+        UIAlertAction *action = [UIAlertAction actionWithTitle:alertInfo.cancelButtonTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            completion ? completion(YES) : nil;
+        }];
+        [alertController addAction:action];
+    }
+
+    if (alertInfo.actionButtonTitle) {
+        UIAlertAction *action = [UIAlertAction actionWithTitle:alertInfo.actionButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            completion ? completion(NO) : nil;
+        }];
+        [alertController addAction:action];
+    }
+
+    [rootViewController presentViewController:alertController animated:YES completion:nil];
+#endif
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -193,7 +218,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 
 @end
 
-// MARK: - Functions
+#pragma mark - "C" Functions
 
 void dp_show_message(NSString *message, dp_dispatcher_completion_block_t completion) {
     [[DPAlertsDispatcher defaultDispatcher] dispatchMessage:message withTitle:@"" canCancel:NO cancelButtonTitle:nil actionButtonTitle:nil userInfo:nil completion:completion];
