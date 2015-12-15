@@ -204,7 +204,8 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
         [alertController addAction:action];
     }
 
-    [rootViewController presentViewController:alertController animated:YES completion:nil];
+    UIViewController *anchorViewController = rootViewController.presentedViewController ?: rootViewController;
+    [anchorViewController presentViewController:alertController animated:YES completion:nil];
 #endif
 }
 
