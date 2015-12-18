@@ -209,7 +209,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #endif
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex NS_CLASS_DEPRECATED_IOS(2_0, 9_0, "UIAlertView is deprecated. Use UIAlertController with a preferredStyle of UIAlertControllerStyleAlert instead") {
     BOOL canceled = (buttonIndex == alertView.cancelButtonIndex);
 
     if (self.alertShownCompletion) {
