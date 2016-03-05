@@ -103,10 +103,17 @@ typedef void(^dp_dispatcher_completion_block_t)(BOOL canceled);
 
 /**
  @property defaultCancelTitle
- @brief Contains default title for calcel button. Default value is @"Cancel".
+ @brief Contains default title for cancel button. Default value is @"Cancel".
  @discussion Cannot be <font color="#AA0D91">nil</font>.
  */
 @property (nonatomic, copy) NSString *defaultCancelTitle;
+
+/**
+ @property maxMessageLength
+ @brief Defines max message length. Default value is 2048.
+ @discussion Cannot be <font color="#AA0D91">nil</font>.
+ */
+@property (nonatomic, assign) NSInteger maxMessageLength;
 
 /**
  @brief Returns shared DPAlertsDispatcher object

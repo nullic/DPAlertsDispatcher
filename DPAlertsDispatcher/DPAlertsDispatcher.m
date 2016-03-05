@@ -66,6 +66,10 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
     return _defaultCancelTitle;
 }
 
+- (NSInteger)maxMessageLength {
+    return _maxMessageLength == 0 ? 2048 : _maxMessageLength;
+}
+
 #pragma mark - Dispatch
 
 - (void)dispatchError:(NSError *)error {
@@ -178,8 +182,9 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
 #pragma mark -
 
 - (void)showAlertWithAlertInfo:(DPAlertInfo *)alertInfo completion:(dp_dispatcher_completion_block_t)completion {
+    NSString *message = alertInfo.message.length > self.maxMessageLength ? [alertInfo.message substringToIndex:self.maxMessageLength] : alertInfo.message;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_9_0
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:alertInfo.message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.actionButtonTitle, nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertInfo.title message:message delegate:self cancelButtonTitle:alertInfo.cancelButtonTitle otherButtonTitles:alertInfo.actionButtonTitle, nil];
     [alertView show];
     self.alertShownCompletion = completion;
 #else
@@ -188,7 +193,7 @@ dispatch_queue_t _dp_message_dispatcher_q = NULL;
         NSLog(@"DPAlertsDispatcher: Can't find rootViewController");
     }
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertInfo.title message:alertInfo.message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertInfo.title message:message preferredStyle:UIAlertControllerStyleAlert];
 
     if (alertInfo.cancelButtonTitle) {
         UIAlertAction *action = [UIAlertAction actionWithTitle:alertInfo.cancelButtonTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
