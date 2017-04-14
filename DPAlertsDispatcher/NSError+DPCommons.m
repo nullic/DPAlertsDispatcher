@@ -10,7 +10,6 @@
 #import "DPAlertsDispatcher.h"
 
 NSString * const kDPErrorTitleKey = @"DPErrorTitleKey";
-NSString * const kDPCurrentApplicationErrorDomain = @"CurrentApplicationErrorDomain";
 
 @implementation NSError (DPCommons)
 
@@ -22,7 +21,7 @@ NSString * const kDPCurrentApplicationErrorDomain = @"CurrentApplicationErrorDom
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setValue:description forKey:NSLocalizedDescriptionKey];
     [userInfo setValue:title forKey:kDPErrorTitleKey];
-    return [self errorWithDomain:kDPCurrentApplicationErrorDomain code:code userInfo:userInfo];
+    return [self errorWithDomain:DP_CURRENT_APPLICATION_ERROR_DOMAIN code:code userInfo:userInfo];
 }
 
 - (instancetype)log {
@@ -38,6 +37,11 @@ NSString * const kDPCurrentApplicationErrorDomain = @"CurrentApplicationErrorDom
 - (void)fail {
     NSLog(@"Unresolved error (critical error): %@", self);
     abort();
+}
+
++ (NSString *)currentApplicationErrorDomain {
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier] ?: @"com.company.application";
+    return [@"dpalertsdispatcher." stringByAppendingString:bundleIdentifier];
 }
 
 @end

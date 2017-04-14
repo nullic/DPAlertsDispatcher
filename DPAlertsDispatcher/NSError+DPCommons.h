@@ -9,17 +9,15 @@
 #import <Foundation/Foundation.h>
 
 /**
+ @brief Macro for [NSError currentApplicationErrorDomain]
+ */
+#define DP_CURRENT_APPLICATION_ERROR_DOMAIN [NSError currentApplicationErrorDomain]
+
+/**
  @constant kDPErrorTitleKey
  @brief Key that used to store custom error title. Used by DPAlertsDispatcher to fill DPAlertInfo object.
  */
 extern NSString * const kDPErrorTitleKey;
-
-/**
- @constant kDPCurrentApplicationErrorDomain
- @brief Error domain used to create errors via +[applicationErrorWithDescription:] methods.
- */
-extern NSString * const kDPCurrentApplicationErrorDomain;
-
 
 @interface NSError (DPCommons)
 
@@ -58,4 +56,11 @@ extern NSString * const kDPCurrentApplicationErrorDomain;
  @brief Print error in console and call <font color="red">abort()</font>
  */
 - (void)fail;
+
+/**
+ @brief Get currentapplication by construction dpalertsdispatcher + [[NSBundle mainBundle] bundleIdentifier]
+ #return Error domain used to create errors via +[applicationErrorWithDescription:] methods.
+ */
++ (NSString *)currentApplicationErrorDomain;
+
 @end
