@@ -77,7 +77,7 @@ typedef void(^dp_dispatcher_completion_block_t)(BOOL canceled);
 
 /**
  @class DPAlertsDispatcher
- @brief
+ @brief Main class for dispatching alerts.
  */
 @interface DPAlertsDispatcher : NSObject <DPAlertsControllerProtocol>
 
