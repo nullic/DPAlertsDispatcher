@@ -9,6 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "NSError+DPCommons.h"
 
+//! Project version number for DPAlertsDispatcher.
+FOUNDATION_EXPORT double DPAlertsDispatcherVersionNumber;
+
+//! Project version string for DPAlertsDispatcher.
+FOUNDATION_EXPORT const unsigned char DPAlertsDispatcherVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <DPAlertsDispatcher/PublicHeader.h>
 
 typedef void(^dp_dispatcher_completion_block_t)(BOOL canceled);
 
