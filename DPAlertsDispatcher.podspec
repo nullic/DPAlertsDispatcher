@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "5.0"
 
   s.source       = { :git => "https://github.com/nullic/DPAlertsDispatcher.git", :tag => "1.1" }
-  s.source_files = "DPAlertsDispatcher", "DPAlertsDispatcher/*.{h,m}"
+  s.source_files = "DPAlertsDispatcher", "DPAlertsDispatcher/DPAlertsDispatcher/*.{h,m}"
   s.requires_arc = true
 
 end
